@@ -65,3 +65,12 @@ Descrição das Telas da Aplicação – AquaAr
     - Botão para exportar gráfico em PNG.
 - Comportamento: O usuário envia o CSV, visualiza os dados, aplica filtros e gera gráficos em uma única interface.
 
+3 Tela de Gráficos Históricos
+- Objetivo: Exibir gráficos baseados nos dados salvos manualmente.
+- Componentes:
+  - Filtros por período e indicador (ex: pH, turbidez).
+  - Gráfico de linha exibindo os valores ao longo do tempo.
+  - Opção de exportar o gráfico em imagem (PNG).
+- Comportamento:
+  - Os dados são lidos do banco (valores salvos anteriormente).
+  - Mostra uma linha do tempo, por exemplo: pH em 10/05 = 8, em 11/05 = 4, etc.
