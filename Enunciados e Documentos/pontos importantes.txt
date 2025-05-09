@@ -1,25 +1,39 @@
-Levantamento de Requisitos
+Levantamento de Requisitos – Sistema de Análise da Qualidade da Água e do Ar
 
 Problema:
-- Dificuldade de visualização de problemas ambientais como queimadas, níveis de poluição e qualidade do ar e água.
-- Os dados são coletados manualmente ou não possuem relatórios visuais.
-- Falta de visualização sobre dados históricos de queimada por região.
-- Necessidade de importar dados CSV de sensores (INPE, estações ambientais) e transformá-los em relatórios visuais.
+- A Secretaria de Meio Ambiente enfrenta dificuldades na visualização e análise de dados de qualidade da água e do ar.
+- Os dados são coletados manualmente ou recebidos em planilhas (CSV), sem relatórios visuais ou gráficos que facilitem a interpretação.
+- A ausência de visualizações torna mais difícil a tomada de decisões ambientais e o acompanhamento de padrões de poluição.
+
+Objetivo:
+- Desenvolver uma aplicação web simples utilizando Django e Matplotlib que permita o upload de arquivos CSV contendo dados ambientais.
+- Gerar gráficos de tendência e comparativos sobre indicadores ambientais, como pH, turbidez, níveis de CO₂, entre outros.
 
 Requisitos Funcionais:
-- Tela de login com autenticação simples.
-- Upload de arquivos CSV (ex: dados de queimadas do INPE).
-- Visualização dos dados em tabela antes da geração dos gráficos.
-- Filtros por data e região administrativa.
-- Geração de gráficos de:
-  - Evolução de queimadas por mês.
-  - Comparativo entre focos de incêndio e qualidade do ar.
-  - Tendência de pH, turbidez, etc.
-  - Chuvas e correlação com queimadas.
-  - Linha do tempo com dados cruzados.
-- Download dos gráficos em formato PNG ou PDF.
+- Tela de login para controle de acesso.
+- Tela para upload de arquivos CSV com dados de sensores ambientais.
+- Armazenamento dos dados em banco de dados SQLite.
+- Filtros por data e por local de coleta.
+- Visualização dos dados em formato de tabela.
+- Geração de gráficos com base nos dados enviados:
+  - Gráfico de linha para tendência de pH ao longo do tempo.
+  - Gráfico de barras comparando níveis de turbidez entre regiões.
+  - Gráfico de linha para níveis de CO₂, temperatura ou outros poluentes.
+- Exportação dos gráficos em imagem (PNG).
 
 Requisitos Não-Funcionais:
-- Tempo de resposta aceitável (< 5 segundos para upload/visualização).
-- Banco de dados para armazenar histórico de dados e uploads.
-- Código desenvolvido em Python com Django e visualizações com Matplotlib.
+- Interface simples baseada em HTML/CSS nativo.
+- Aplicação desenvolvida em Python com o framework Django.
+- Visualizações de dados feitas com Matplotlib.
+- Tempo de resposta aceitável para upload e renderização de gráficos (< 5 segundos).
+- Suporte a arquivos CSV no padrão UTF-8, com separador por vírgula ou ponto e vírgula.
+
+Nome do Projeto:
+**AquaAr: Monitoramento Ambiental com Visualização de Dados**
+
+Tecnologias Utilizadas:
+- Python 3.x
+- Django
+- SQLite (banco de dados padrão do Django)
+- Matplotlib
+- HTML/CSS
