@@ -37,3 +37,31 @@ Tecnologias Utilizadas:
 - SQLite (banco de dados padrão do Django)
 - Matplotlib
 - HTML/CSS
+
+Descrição das Telas da Aplicação – AquaAr
+
+1. Tela de Login
+- Objetivo: Controlar o acesso à aplicação.
+- Componentes:
+  - Campo para nome de usuário.
+  - Campo para senha.
+  - Botão "Entrar".
+- Comportamento: Após autenticação bem-sucedida, o usuário é redirecionado para a tela principal da aplicação.
+
+2. Tela Principal (Upload, Visualização e Gráficos)
+- Objetivo: Centralizar as funcionalidades de envio e análise de dados ambientais.
+- Componentes:
+  - Seção de Upload:
+    - Campo para selecionar arquivo CSV.
+    - Botão "Enviar".
+  - Seção de Visualização:
+    - Tabela exibindo os dados carregados (ex: data, local, pH, turbidez, CO₂, etc.).
+  - Seção de Filtros:
+    - Filtros por intervalo de datas.
+    - Filtro por local de coleta.
+  - Seção de Gráficos:
+    - Botões para gerar diferentes tipos de gráficos (linha, barras).
+    - Gráfico exibido dinamicamente com base nos filtros aplicados.
+    - Botão para exportar gráfico em PNG.
+- Comportamento: O usuário envia o CSV, visualiza os dados, aplica filtros e gera gráficos em uma única interface.
+
