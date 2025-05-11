@@ -12,15 +12,16 @@
         <img src="../static/media/images.png" alt="Logo" class="logo">
         <h1>Faça login na sua conta</h1>
         
-        <form>
+        <form method="post">
+            {% csrf_token %}
             <div class="input-group">
                 <label for="username">Usuário</label>
-                <input type="text" id="username" placeholder="Digite seu usuário" required>
+                <input type="text" id="username" name="username" placeholder="Digite seu usuário" required>
             </div>
             
             <div class="input-group">
                 <label for="password">Senha</label>
-                <input type="password" id="password" placeholder="Digite sua senha" required>
+                <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
             </div>
             
             <button type="submit" class="btn-login">Entrar</button>
