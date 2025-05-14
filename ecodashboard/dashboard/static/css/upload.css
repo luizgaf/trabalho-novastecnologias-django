@@ -1,0 +1,58 @@
+body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #1e90ff;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        nav a {
+            margin-left: 1.5rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .upload-btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #1e90ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        table {
+            width: 100%;
+            margin-top: 2rem;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+        .delete-btn {
+            color: red;
+            text-decoration: none;
+            font-weight: bold;
+        }

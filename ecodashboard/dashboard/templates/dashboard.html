@@ -1,11 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+{% load static%}
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 </head>
 <body>
-    Hello World
+
+<header>
+    <div class="logo">
+        <img src="{% static 'media/images.png' %}" alt="Logo" height="40">
+    </div>
+    <nav>
+        <a href="/dashboard/">Dashboard</a>
+        <a href="/dashboard/upload/">Upload</a>
+        <a href="/admin/">Administração</a>
+        <a href="/dashboard/trocar_usuario/">Trocar Usuário</a>
+    </nav>
+</header>
+
+<div class="dashboard-content">
+    <h1>Gerar Gráfico</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="titulo">Título do Gráfico</label>
+            <input type="text" id="titulo" name="titulo" placeholder="Digite o título do gráfico" required>
+        </div>
+
+        <div class="form-group">
+            <label for="tipo_grafico">Tipo de Gráfico</label>
+            <select id="tipo_grafico" name="tipo_grafico" required>
+                <option value="line">Linha</option>
+                <option value="bar">Barra</option>
+                <option value="scatter">Dispersão</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="tipo_dado">Tipo de Dado</label>
+            <select id="tipo_dado" name="tipo_dado" required>
+                <option value="ph">pH</option>
+                <option value="turbidez">Turbidez</option>
+                <option value="oxigenio_dissolvido">Oxigênio Dissolvido</option>
+                <option value="qualidade_ar">Qualidade do Ar</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="data_inicio">Data de Início</label>
+            <input type="date" id="data_inicio" name="data_inicio" required>
+        </div>
+
+        <div class="form-group">
+            <label for="data_fim">Data de Fim</label>
+            <input type="date" id="data_fim" name="data_fim" required>
+        </div>
+
+        <div class="form-group">
+            <label for="tipo">Tipo de Relatório</label>
+            <select id="tipo" name="tipo" required>
+                <option value="agua">Água</option>
+                <option value="ar">Ar</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="formato">Formato do Arquivo</label>
+            <select id="formato" name="formato" required>
+                <option value="pdf">PDF</option>
+                <option value="png">PNG</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <button type="submit">Gerar Gráfico</button>
+        </div>
+    </form>
+</div>
+
 </body>
 </html>

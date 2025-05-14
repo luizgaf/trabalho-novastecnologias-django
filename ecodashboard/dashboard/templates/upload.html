@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload de Arquivos</title>
+    <link rel="stylesheet" href="{% static 'css/upload.css' %}">
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <img src="{% static 'media/images.png' %}" alt="Logo" height="40">
+    </div>
+    <nav>
+        <a href="/dashboard/">Dashboard</a>
+        <a href="/dashboard/upload/">Upload</a>
+        <a href="/admin/">Administração</a>
+        <a href="/dashboard/trocar_usuario/">Trocar Usuário</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h2>Upload de Arquivos</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="upload-btn">Upload de Arquivos</button>
+    </form>
+
+    <h3>Relatórios de Qualidade da Água</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Data de Postagem</th>
+                <th>Qualidade</th>
+                <th>Usuário</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for relatorio in relatorios_agua %}
+            <tr>
+                <td>{{ relatorio.data_registro|date:"d/m/Y H:i" }}</td>
+                <td>{{ relatorio.qualidade|title }}</td>
+                <td>{{ relatorio.usuario.username }}</td>
+                <td>
+                    <a href="{% url 'excluir_relatorio' 'agua' relatorio.id %}" class="delete-btn">Excluir</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">Nenhum relatório de água encontrado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Relatórios de Qualidade do Ar</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Data de Postagem</th>
+                <th>Qualidade</th>
+                <th>Usuário</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for relatorio in relatorios_ar %}
+            <tr>
+                <td>{{ relatorio.data_registro|date:"d/m/Y H:i" }}</td>
+                <td>{{ relatorio.qualidade|title }}</td>
+                <td>{{ relatorio.usuario.username }}</td>
+                <td>
+                    <a href="{% url 'excluir_relatorio' 'ar' relatorio.id %}" class="delete-btn">Excluir</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">Nenhum relatório de ar encontrado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

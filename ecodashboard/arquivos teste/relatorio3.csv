@@ -1,0 +1,6 @@
+data,ph,turbidez,oxigenio_dissolvido,temperatura,qualidade,tipo
+2025-05-01,7.1,2.0,7.4,22.4,boa,agua
+2025-05-02,7.4,2.5,8.2,22.8,boa,agua
+2025-05-03,6.9,3.0,6.8,23.0,moderada,agua
+2025-05-04,,13.2,,19.5,ruim,ar
+2025-05-05,,14.1,,21.2,moderada,ar
