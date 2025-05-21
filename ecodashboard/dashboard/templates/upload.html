@@ -45,7 +45,9 @@
                 <td>{{ relatorio.qualidade|title }}</td>
                 <td>{{ relatorio.usuario.username }}</td>
                 <td>
-                    <a href="{% url 'excluir_relatorio' 'agua' relatorio.id %}" class="delete-btn">Excluir</a>
+                    <a href="{% url 'excluir_relatorio' relatorio.id 'agua' %}" 
+                    onclick="return confirm('Tem certeza que deseja excluir este relatório de água?')"
+                    class="delete-btn">Excluir</a>
                 </td>
             </tr>
             {% empty %}
@@ -71,7 +73,9 @@
                 <td>{{ relatorio.qualidade|title }}</td>
                 <td>{{ relatorio.usuario.username }}</td>
                 <td>
-                    <a href="{% url 'excluir_relatorio' 'ar' relatorio.id %}" class="delete-btn">Excluir</a>
+                    <a href="{% url 'excluir_relatorio' relatorio.id 'ar' %}" 
+                    onclick="return confirm('Tem certeza que deseja excluir este relatório de ar?')"
+                    class="delete-btn">Excluir</a>
                 </td>
             </tr>
             {% empty %}

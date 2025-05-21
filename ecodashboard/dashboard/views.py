@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from .models import AguaData, ArData
 from django.utils import timezone
 
+from django.utils.timezone import make_aware
 
 import matplotlib
 matplotlib.use('Agg')
@@ -22,7 +23,6 @@ from io import BytesIO
 @login_required(login_url='/login/')
 def dashboard(request):
     if request.method == 'POST':
-        print("REQUISIÇÃO POST CHEGOU")
         titulo = request.POST.get('titulo')
         tipo_grafico = request.POST.get('tipo_grafico')
         tipo_dado = request.POST.get('tipo_dado')
@@ -31,40 +31,52 @@ def dashboard(request):
         tipo = request.POST.get('tipo')  # 'agua' ou 'ar'
         formato = request.POST.get('formato')  # 'png' ou 'pdf'
 
+        # Validação de datas
         try:
-            data_inicio = timezone.make_aware(datetime.strptime(data_inicio, '%Y-%m-%d'))
-            data_fim = timezone.make_aware(datetime.strptime(data_fim, '%Y-%m-%d') + timedelta(days=1))
+            data_inicio = make_aware(datetime.strptime(data_inicio, '%Y-%m-%d'))
+            data_fim = make_aware(datetime.strptime(data_fim, '%Y-%m-%d') + timedelta(days=1))
         except ValueError:
             return HttpResponse("Erro ao converter datas.", status=400)
 
-
+        # Seleção dos dados conforme tipo
         if tipo == 'agua':
-            dados = AguaData.objects.filter(data_amostragem__range=(data_inicio, data_fim))
+            dados = AguaData.objects.filter(
+                data_amostragem__range=(data_inicio, data_fim)
+            ).order_by('data_amostragem')
         else:
-            dados = ArData.objects.filter(data_amostragem__range=(data_inicio, data_fim))
+            dados = ArData.objects.filter(
+                data_amostragem__range=(data_inicio, data_fim)
+            ).order_by('data_amostragem')
 
+        # Extração dos valores e datas
         valores = []
         datas = []
         for d in dados:
             valor = getattr(d, tipo_dado, None)
             if valor is not None:
-                valores.append(valor)
-                datas.append(d.data_amostragem)
+                try:
+                    valor_float = float(valor)
+                    valores.append(valor_float)
+                    datas.append(d.data_amostragem)
+                except (ValueError, TypeError):
+                    continue  # Ignora valores não numéricos
 
         if not valores:
-            return render(request, 'dashboard.html', {'erro': 'Nenhum dado encontrado para os critérios selecionados.'})
+            return render(request, 'dashboard.html', {
+                'erro': 'Nenhum dado válido encontrado para os critérios selecionados.'
+            })
 
         plt.figure(figsize=(10, 6))
         if tipo_grafico == 'line':
-            plt.plot(datas, valores, marker='o')
+            plt.plot(datas, valores, marker='o', linestyle='-')
         elif tipo_grafico == 'bar':
             plt.bar(datas, valores)
         elif tipo_grafico == 'scatter':
             plt.scatter(datas, valores)
-        
+
         plt.title(titulo)
         plt.xlabel('Data')
-        plt.ylabel(tipo_dado.capitalize())
+        plt.ylabel(tipo_dado.replace('_', ' ').capitalize())
         plt.grid(True)
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%y %H:%M'))
         plt.gca().xaxis.set_major_locator(mdates.AutoDateLocator())
@@ -73,15 +85,16 @@ def dashboard(request):
 
         buffer = BytesIO()
         plt.savefig(buffer, format=formato)
-        plt.savefig('./grafico_teste.png')
         plt.close()
         buffer.seek(0)
 
-        response = HttpResponse(buffer, content_type=f'image/{formato}' if formato == 'png' else 'application/pdf')
+        content_type = 'image/png' if formato == 'png' else 'application/pdf'
+        response = HttpResponse(buffer, content_type=content_type)
         response['Content-Disposition'] = f'attachment; filename="{titulo}.{formato}"'
         return response
 
     return render(request, 'dashboard.html')
+
 
 
 @login_required(login_url='/login/')
@@ -93,24 +106,40 @@ def upload(request):
         if form.is_valid():
             arquivo_csv = TextIOWrapper(request.FILES['arquivo'].file, encoding='utf-8')
             leitor = csv.DictReader(arquivo_csv)
-            
+
             for linha in leitor:
-                if linha['tipo'] == 'agua':  
+                tipo = linha.get('tipo', '').strip().lower()
+                data_str = linha.get('data_amostragem')
+
+                if not data_str:
+                    messages.error(request, "Coluna 'data_amostragem' não encontrada.")
+                    continue
+
+                try:
+                    data_amostragem = datetime.strptime(data_str, '%Y-%m-%d %H:%M:%S')
+                except ValueError:
+                    try:
+                        data_amostragem = datetime.strptime(data_str, '%Y-%m-%d')
+                    except ValueError:
+                        messages.error(request, f"Data inválida: {data_str}")
+                        continue
+
+                if tipo == 'agua':
                     AguaData.objects.create(
                         usuario=request.user,
                         arquivo_nome=request.FILES['arquivo'].name,
-                        data_amostragem=datetime.strptime(linha['data'], '%Y-%m-%d'),
+                        data_amostragem=data_amostragem,
                         ph=linha.get('ph') or None,
                         turbidez=linha.get('turbidez') or None,
                         oxigenio_dissolvido=linha.get('oxigenio_dissolvido') or None,
                         temperatura=linha.get('temperatura') or None,
                         qualidade=linha.get('qualidade', 'desconhecida')
                     )
-                elif linha['tipo'] == 'ar':
+                elif tipo == 'ar':
                     ArData.objects.create(
                         usuario=request.user,
                         arquivo_nome=request.FILES['arquivo'].name,
-                        data_amostragem=datetime.strptime(linha['data'], '%Y-%m-%d'),
+                        data_amostragem=data_amostragem,
                         co2=linha.get('co2') or None,
                         pm25=linha.get('pm25') or None,
                         pm10=linha.get('pm10') or None,
@@ -119,11 +148,19 @@ def upload(request):
                         umidade=linha.get('umidade') or None,
                         qualidade=linha.get('qualidade', 'desconhecida')
                     )
-            return redirect('upload')  
+                else:
+                    messages.error(request, f"Tipo inválido: {tipo}")
+                    continue
+
+            return redirect('upload')
 
     relatorios_agua = AguaData.objects.all().order_by('-data_amostragem')
     relatorios_ar = ArData.objects.all().order_by('-data_amostragem')
-    return render(request, 'upload.html', {'form': form, 'relatorios_agua': relatorios_agua, 'relatorios_ar': relatorios_ar})
+    return render(request, 'upload.html', {
+        'form': form,
+        'relatorios_agua': relatorios_agua,
+        'relatorios_ar': relatorios_ar
+    })
 
 
 def excluir_relatorio(request, relatorio_id, tipo):
@@ -135,7 +172,7 @@ def excluir_relatorio(request, relatorio_id, tipo):
         messages.error(request, "Tipo de relatório inválido.")
         return HttpResponseRedirect(reverse('upload'))
 
-    if request.user.groups.filter(name='moderadores').exists() or request.user == relatorio.usuario:
+    if request.user.is_superuser or request.user.groups.filter(name='moderadores').exists() or request.user == relatorio.usuario:
         relatorio.delete()
         messages.success(request, "Relatório excluído com sucesso.")
     else:

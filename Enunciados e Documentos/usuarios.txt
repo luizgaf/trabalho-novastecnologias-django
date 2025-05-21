@@ -1,5 +1,6 @@
-admin : admin
-ti : infra2025
-marcos : marc0s10@
-leticia : Let10@20
-estagiario : Estagio2025@
+admin : admin : superuser
+ti : infra2025 : superuser
+marcos : marc0s10@ : moderador
+leticia : Let10@20 : moderador
+estagiario : Estagio2025@ : usuario
+
