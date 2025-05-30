@@ -43,10 +43,14 @@ def dashboard(request):
             dados = AguaData.objects.filter(
                 data_amostragem__range=(data_inicio, data_fim)
             ).order_by('data_amostragem')
-        else:
+        elif tipo == 'ar':
             dados = ArData.objects.filter(
                 data_amostragem__range=(data_inicio, data_fim)
             ).order_by('data_amostragem')
+        else:
+            return render(request, 'dashboard.html', {
+                'erro': 'Tipo de dado não especificado. Selecione Água ou Ar.'
+            })
 
         # Extração dos valores e datas
         valores = []

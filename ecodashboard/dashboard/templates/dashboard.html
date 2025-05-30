@@ -24,63 +24,82 @@
 <div class="dashboard-content">
     <h1>Gerar Gráfico</h1>
 
+
+<div class="form-container">
     <form method="POST">
         {% csrf_token %}
-        
-        <div class="form-group">
-            <label for="titulo">Título do Gráfico</label>
-            <input type="text" id="titulo" name="titulo" placeholder="Digite o título do gráfico" required>
+
+        <label>Título do gráfico:</label>
+        <input type="text" name="titulo" required>
+
+        <label>Tipo de gráfico:</label>
+        <select name="tipo_grafico" required>
+            <option value="scatter">Dispersão</option>
+            <option value="bar">Barra</option>
+            <option value="line">Linha</option>
+        </select>
+
+        <label>Tipo de dados:</label>
+        <div class="radio-group">
+            <label><input type="radio" name="tipo" value="agua" onclick="mostrarFiltros('agua')"> Água</label>
+            <label><input type="radio" name="tipo" value="ar" onclick="mostrarFiltros('ar')"> Ar</label>
         </div>
 
-        <div class="form-group">
-            <label for="tipo_grafico">Tipo de Gráfico</label>
-            <select id="tipo_grafico" name="tipo_grafico" required>
-                <option value="line">Linha</option>
-                <option value="bar">Barra</option>
-                <option value="scatter">Dispersão</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="tipo_dado">Tipo de Dado</label>
-            <select id="tipo_dado" name="tipo_dado" required>
+        <!-- Filtros de Água -->
+        <div id="filtros_agua" class="filtro">
+            <label>Selecione o dado de água:</label>
+            <select name="tipo_dado">
                 <option value="ph">pH</option>
                 <option value="turbidez">Turbidez</option>
                 <option value="oxigenio_dissolvido">Oxigênio Dissolvido</option>
-                <option value="qualidade_ar">Qualidade do Ar</option>
+                <option value="temperatura">Temperatura</option>
+                <option value="qualidade">Qualidade</option>
             </select>
         </div>
 
-        <div class="form-group">
-            <label for="data_inicio">Data de Início</label>
-            <input type="date" id="data_inicio" name="data_inicio" required>
-        </div>
-
-        <div class="form-group">
-            <label for="data_fim">Data de Fim</label>
-            <input type="date" id="data_fim" name="data_fim" required>
-        </div>
-
-        <div class="form-group">
-            <label for="tipo">Tipo de Relatório</label>
-            <select id="tipo" name="tipo" required>
-                <option value="agua">Água</option>
-                <option value="ar">Ar</option>
+        <!-- Filtros de Ar -->
+        <div id="filtros_ar" class="filtro">
+            <label>Selecione o dado de ar:</label>
+            <select name="tipo_dado">
+                <option value="co2">CO2</option>
+                <option value="pm25">PM2.5</option>
+                <option value="pm10">PM10</option>
+                <option value="o3">Ozônio (O₃)</option>
+                <option value="temperatura">Temperatura</option>
+                <option value="umidade">Umidade</option>
+                <option value="qualidade">Qualidade</option>
             </select>
         </div>
 
-        <div class="form-group">
-            <label for="formato">Formato do Arquivo</label>
-            <select id="formato" name="formato" required>
-                <option value="pdf">PDF</option>
-                <option value="png">PNG</option>
-            </select>
-        </div>
+        <label>Data inicial:</label>
+        <input type="date" name="data_inicio" required>
 
-        <div class="form-group">
-            <button type="submit">Gerar Gráfico</button>
-        </div>
+        <label>Data final:</label>
+        <input type="date" name="data_fim" required>
+
+        <label>Formato do gráfico:</label>
+        <select name="formato" required>
+            <option value="png">PNG</option>
+            <option value="pdf">PDF</option>
+        </select>
+
+        <button type="submit">Gerar Gráfico</button>
     </form>
+</div>
+
+<script>
+    function mostrarFiltros(tipo) {
+        const filtroAgua = document.getElementById('filtros_agua');
+        const filtroAr = document.getElementById('filtros_ar');
+
+        filtroAgua.style.display = (tipo === 'agua') ? 'block' : 'none';
+        filtroAr.style.display = (tipo === 'ar') ? 'block' : 'none';
+
+        filtroAgua.querySelector('select').setAttribute('name', tipo === 'agua' ? 'tipo_dado' : '');
+        filtroAr.querySelector('select').setAttribute('name', tipo === 'ar' ? 'tipo_dado' : '');
+    }
+</script>
+
 </div>
 
 </body>
